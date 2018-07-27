@@ -1,1 +1,13 @@
-<p>This is the partial for view 1.</p>
+<div ng-controller="CalcCtrl">
+    <form novalidate>
+        <label>Elevation: <input type="text" ng-model="dac.elevation" /></label><br />
+        <label>Air Temperature: <input type="text" ng-model="dac.air_temperature" /></label><br />
+        <label>Barometric Pressure: <input type="text" ng-model="dac.barometric_pressure" /></label><br />
+        <label>Relative Humidity: <input type="text" ng-model="dac.barometric_humidity" /></label><br />
+        <hr />
+        <label>Density Altitude: <input type="text" ng-model="dac.density_altitude" /></label><br />
+        <label>Relative Density: <input type="text" ng-model="dac.relative_density" /></label><br />
+        <hr />
+        <pre>{{dac | json}}</pre>
+    </form>
+</div>
