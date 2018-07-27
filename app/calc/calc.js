@@ -9,7 +9,7 @@ angular.module('myApp.calc', ['ngRoute'])
         });
     }])
 
-    .controller('CalcCtrl', ['$scope', 'ipLocation', function ($scope, ipLocation, logger) {
+    .controller('CalcCtrl', ['$scope', 'ipLocation', 'elevation', function ($scope, ipLocation, elevation) {
         $scope.dac = {
             elevation: 0,
             air_temperature: 0,
@@ -19,12 +19,12 @@ angular.module('myApp.calc', ['ngRoute'])
             relative_density: 'n/a'
         };
 
-        $scope.calculate = function() {
+        $scope.calculate = function () {
             $scope.dac.density_altitude = $scope.dac.elevation + $scope.dac.air_temperature;
         };
 
         ipLocation.getLocation()
-            .then(function(data) {
+            .then(function (data) {
                 $scope.location = {
                     lat: data.lat,
                     lng: data.lon,
@@ -32,5 +32,13 @@ angular.module('myApp.calc', ['ngRoute'])
                     zip: data.zip
                 };
                 return data;
+            }).then(function () {
+                elevation.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
+                    console.log( data.results[0].elevation);
+                    $scope.dac.elevation = data.results[0].elevation;
+                    return data;
             });
+        });
+
+
     }]);

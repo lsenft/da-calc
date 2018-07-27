@@ -10,7 +10,7 @@ angular.module('myApp', [
     $locationProvider.hashPrefix('!');
 
     $routeProvider.otherwise({redirectTo: '/calc'});
-}]).factory('ipLocation', ipLocation);
+}]).factory('ipLocation', ipLocation).factory('elevation', elevation);
 
 ipLocation.$inject = ['$http'];
 
@@ -31,6 +31,31 @@ function ipLocation($http) {
         }
 
         function getLocationFailed(error) {
+            console.log('XHR Failed for ' + url + '.' + error.data);
+        }
+    }
+}
+
+elevation.$inject = ['$http'];
+
+function elevation($http) {
+    return {
+        getElevation: getElevation
+    };
+    function getElevation(lat, lng) {
+    const url = 'https://api.open-elevation.com/api/v1/lookup?locations=' + lat + ',' +lng;
+
+    return $http.get(url)
+        .then(getElevationComplete)
+        .catch(getElevationFailed);
+
+
+
+        function getElevationComplete(response) {
+            return response.data;
+        }
+
+        function getElevationFailed(error) {
             console.log('XHR Failed for ' + url + '.' + error.data);
         }
     }
