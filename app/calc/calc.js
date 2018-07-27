@@ -39,8 +39,6 @@ angular.module('myApp.calc', ['ngRoute'])
             });
         }).then(function () {
             weather.getWeather($scope.location.lat, $scope.location.lng).then(function (data) {
-                console.log( data);
-
                 $scope.dac.air_temperature = data.main.temp;
                 $scope.dac.barometric_pressure = data.main.pressure;
                 $scope.dac.relative_humidity = data.main.humidity;
