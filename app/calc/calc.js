@@ -9,12 +9,12 @@ angular.module('myApp.calc', ['ngRoute'])
         });
     }])
 
-    .controller('CalcCtrl', ['$scope', 'ipLocation', 'elevation', function ($scope, ipLocation, elevation) {
+    .controller('CalcCtrl', ['$scope', 'ipLocation', 'elevation', 'weather', function ($scope, ipLocation, elevation, weather) {
         $scope.dac = {
             elevation: 0,
             air_temperature: 0,
             barometric_pressure: 0,
-            barometric_humidity: 0,
+            relative_humidity: 0,
             density_altitude: 'n/a',
             relative_density: 'n/a'
         };
@@ -34,11 +34,21 @@ angular.module('myApp.calc', ['ngRoute'])
                 return data;
             }).then(function () {
                 elevation.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
-                    console.log( data.results[0].elevation);
                     $scope.dac.elevation = data.results[0].elevation;
                     return data;
+            });
+        }).then(function () {
+            weather.getWeather($scope.location.lat, $scope.location.lng).then(function (data) {
+                console.log( data);
+
+                $scope.dac.air_temperature = data.main.temp;
+                $scope.dac.barometric_pressure = data.main.pressure;
+                $scope.dac.relative_humidity = data.main.humidity;
+                return data;
             });
         });
 
 
     }]);
+
+

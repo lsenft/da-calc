@@ -10,7 +10,9 @@ angular.module('myApp', [
     $locationProvider.hashPrefix('!');
 
     $routeProvider.otherwise({redirectTo: '/calc'});
-}]).factory('ipLocation', ipLocation).factory('elevation', elevation);
+}]).factory('ipLocation', ipLocation)
+    .factory('elevation', elevation)
+    .factory('weather', weather);
 
 ipLocation.$inject = ['$http'];
 
@@ -43,7 +45,7 @@ function elevation($http) {
         getElevation: getElevation
     };
     function getElevation(lat, lng) {
-    const url = 'https://api.open-elevation.com/api/v1/lookup?locations=' + lat + ',' +lng;
+    const url = 'https://api.open-elevation.com/api/v1/lookup?locations=' + lat + ',' + lng;
 
     return $http.get(url)
         .then(getElevationComplete)
@@ -60,3 +62,30 @@ function elevation($http) {
         }
     }
 }
+
+weather.$inject = ['$http'];
+
+function weather($http) {
+    return {
+        getWeather: getWeather
+    };
+    function getWeather(lat, lng) {
+        const api_key = '133cb745ed32ad0dbf2284df34a28987';
+        const url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lng + '&APPID=' + api_key;
+
+        return $http.get(url)
+            .then(getWeatherComplete)
+            .catch(getWeatherFailed);
+
+
+
+        function getWeatherComplete(response) {
+            return response.data;
+        }
+
+        function getWeatherFailed(error) {
+            console.log('XHR Failed for ' + url + '.' + error.data);
+        }
+    }
+}
+
