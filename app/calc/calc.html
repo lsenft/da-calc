@@ -1,7 +1,7 @@
 <div ng-controller="CalcCtrl">
     <form novalidate ng-submit="calculate()">
-        <label>Elevation: <input type="text" ng-model="dac.elevation" /></label><br />
-        <label>Air Temperature: <input type="text" ng-model="dac.air_temperature" /></label><br />
+        <label>Elevation (meters): <input type="text" ng-model="dac.elevation" /></label><br />
+        <label>Air Temperature (kelvin): <input type="text" ng-model="dac.air_temperature" /></label><br />
         <label>Barometric Pressure: <input type="text" ng-model="dac.barometric_pressure" /></label><br />
         <label>Relative Humidity: <input type="text" ng-model="dac.relative_humidity" /></label><br />
         <button class="btn" type="submit">Submit</button><br />
