@@ -7,21 +7,6 @@ app.factory('calculationService', [function () {
     const m_per_ft = 0.304800;
     const ft_per_m = (1 / 0.304800);
 
-    //  Rounding function by Jason Moon
-    function roundNum(Num, Places) {
-        if (Places > 0) {
-            if ((Num.toString().length - Num.toString().lastIndexOf('.')) > (Places + 1)) {
-                var Rounder = Math.pow(10, Places);
-                return Math.round(Num * Rounder) / Rounder;
-            }
-            else {
-                return Num;
-            }
-        }
-        else {
-            return Math.round(Num);
-        }
-    }
 
     function calcVaporPressure_wobus(t)
 // Calculate the saturation vapor pressure given the temperature(celsius)
@@ -127,7 +112,6 @@ app.factory('calculationService', [function () {
 
     return {
         calculate: function (data) {
-
             // define variables to be used in inputs
             var z, zm, altset, altsetmb, tk, tc, tf, tdpf, tdpc;
 
@@ -191,22 +175,12 @@ app.factory('calculationService', [function () {
 
             // calculate estimated awos density altitude
             var nws = 145442.16 * (1 - Math.pow(((17.326 * actpress) / (tf + 459.67)), 0.235));
-            var awos = roundNum(nws / 100) * 100;
+            var awos = (nws / 100) * 100;
+            var density_e = density * 0.062428;
+            var awosm = awos * m_per_ft;
 
-
-            // Print the results
-            var outForm = {};
-            outForm.densaltz = roundNum(densaltz, 0);
-            outForm.densaltzm = roundNum(densaltzm, 0);
-
-            outForm.actpress = roundNum(actpress, 3);
-            outForm.actpressmb = roundNum(actpressmb, 2);
-
-            outForm.density_m = roundNum(density, 3);
-            outForm.density_e = roundNum(density * 0.062428, 4);
-            outForm.awosm = roundNum((awos * m_per_ft), 0);
             return {
-                relative_density: roundNum(relden, 2),
+                relative_density: relden,
                 density_altitude: awos
             };
         }

@@ -5,7 +5,6 @@ app.factory('browserLocationService', ['geolocation', function (geolocation) {
     return {
         getLocation: function () {
             return geolocation.getLocation().then(function (data) {
-                console.log(data);
                 return {
                     lat: data.coords.latitude,
                     lng: data.coords.longitude,

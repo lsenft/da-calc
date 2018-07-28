@@ -1,35 +1,35 @@
 <div ng-controller="CalcCtrl">
-    <h1 class="page-header" ng-bind-html="location.location_name"></h1>
+    <h1 class="page-header" ng-bind-html="weather.location_name"></h1>
     <table class="table table-striped">
         <tbody>
             <tr>
                 <th>Elevation:</th>
-                <td><span ng-bind-html="elevation"></span></td>
+                <td><span ng-bind-html="location.elevation | number:2"></span></td>
                 <td>meters</td>
             </tr>
             <tr>
                 <th>Air Temperature:</th>
-                <td><span ng-bind-html="weather.air_temperature"></span></td>
+                <td><span ng-bind-html="weather.air_temperature | number:2"></span></td>
                 <td>Kelvin</td>
             </tr>
             <tr>
                 <th>Barometric Pressure:</th>
-                <td><span ng-bind-html="weather.barometric_pressure"></span></td>
+                <td><span ng-bind-html="weather.barometric_pressure | number:2"></span></td>
                 <td></td>
             </tr>
             <tr>
                 <th>Relative Humidity:</th>
-                <td><span ng-bind-html="weather.relative_humidity"></span></td>
+                <td><span ng-bind-html="weather.relative_humidity | number:2"></span></td>
                 <td></td>
             </tr>
             <tr>
                 <th>Density Altitude:</th>
-                <td><span ng-bind-html="dac.density_altitude"></span></td>
+                <td><span ng-bind-html="dac.density_altitude | number:2"></span></td>
                 <td></td>
             </tr>
             <tr>
                 <th>Relative Density:</th>
-                <td><span ng-bind-html="dac.relative_density"></span></td>
+                <td><span ng-bind-html="dac.relative_density | number:2"></span></td>
                 <td></td>
             </tr>
         </tbody>

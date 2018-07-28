@@ -12,7 +12,8 @@ app.factory('weatherService', ['$http', function ($http) {
                     return {
                         air_temperature: response.data.main.temp,
                         barometric_pressure: response.data.main.pressure,
-                        relative_humidity: response.data.main.humidity
+                        relative_humidity: response.data.main.humidity,
+                        location_name: response.data.name
                     };
                 });
         }

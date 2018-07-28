@@ -9,13 +9,13 @@ angular.module('myApp.calc', ['ngRoute'])
     }])
     .controller('CalcCtrl', [
         '$scope',
+        '$q',
         'browserLocationService',
         'ipLocationService',
         'elevationService',
         'weatherService',
         'calculationService',
-        function ($scope, browserLocationService, ipLocationService, elevationService, weatherService, calculationService) {
-            $scope.elevation = 0;
+        function ($scope, $q, browserLocationService, ipLocationService, elevationService, weatherService, calculationService) {
             $scope.weather = {
                 air_temperature: 0,
                 barometric_pressure: 0,
@@ -27,72 +27,59 @@ angular.module('myApp.calc', ['ngRoute'])
                 density_altitude: 'n/a',
                 relative_density: 'n/a'
             };
+            $scope.location = {lat: 0, lng: 0, elevation: 0};
 
-            browserLocationService.getLocation().then(function (data) {
-                console.log(data);
-                return data;
+            var locationRequest = getLocation().then(function (responses) {
+                $scope.location = responses;
+
             });
 
-            ipLocationService.getLocation()
-                .then(function (response) {
-
-                    $('#progress-bar').html('Loading location...');
-
-
-                    $scope.location = response;
-
-
-                    $('#progress-bar').css({'width': '25%'});
-
-                    return response;
-                }).then(function () {
-                $('#progress-bar').html('Loading elevation...');
-
-                elevationService.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
-                    $scope.elevation = data;
-                    $('#progress-bar').css({'width': '50%'});
-                    return data;
+            var weatherRequest = $q.all([locationRequest]).then(function(){
+                return weatherService.getWeather($scope.location.lat, $scope.location.lng).then(function (response) {
+                    $scope.weather = response;
                 });
-            }).then(function () {
-                if (!$scope.location) {
-                    return;
-                }
-
-                $('#progress-bar').html('Loading weather...');
+            });
 
 
-                weatherService.getWeather($scope.location.lat, $scope.location.lng).then(function (data) {
-                    $scope.weather = data;
-
-                    $('#progress-bar').css({'width': '75%'});
-                    return data;
-                });
-            }).then(function () {
-                $('#progress-bar').html('Calculating...');
-                $('#progress-bar').css({'width': '75%'});
-
-                $scope.dac = calculationService.calculate({
-                    elevation: $scope.elevation,
-                    barometric_pressure: $scope.weather.barometric_pressure,
-                    air_temperature: $scope.weather.air_temperature,
-                    relative_humidity: $scope.weather.relative_humidity
-                });
-
-                $('#progress-bar').css({'width': '100%'});
-                $('#loading, #loading-overlay').hide();
-            }).catch(function (e) {
-
+            $q.all([locationRequest, weatherRequest]).then(function() {
+                    var options = {
+                        elevation: $scope.location.elevation,
+                        barometric_pressure: $scope.weather.barometric_pressure,
+                        air_temperature: $scope.weather.air_temperature,
+                        relative_humidity: $scope.weather.relative_humidity
+                    };
+                    $scope.dac = calculationService.calculate(options);
+                })
+                .catch(function (e) {
                 var msg = "<div class=\"alert alert-danger\">\n" +
-                    "  <strong>Error " + e.status + "</strong> " + e.statusText + "\n" +
+                    "  <strong>Error:</strong> " + e.message + "\n" +
                     "</div>";
                 $('#messages').append(msg);
 
-            })
-                .finally(function () {
-                    $('#progress-bar').css({'width': '100%'});
-                    $('#loading, #loading-overlay').hide();
-                });
+            })['finally'](function () {
+                $('#loading, #loading-overlay').hide();
+            });
 
-        }]);
+
+            function getLocation() {
+                return browserLocationService.getLocation().then(function (data) {
+                    if (!data) {
+                        $q.all([
+                            ipLocationService.getLocation(),
+                            elevationService.getElevation($scope.location.lat, $scope.location.lng)
+                        ])
+                            .then(function (responses) {
+                                $scope.location = responses[0];
+                                $scope.elevation = responses[1];
+                            });
+                    }
+
+                    return data;
+                });
+            }
+        }
+
+
+]);
 
 
