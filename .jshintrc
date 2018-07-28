@@ -20,6 +20,8 @@
     // Protractor
     "browser": false,
     "element": false,
-    "by": false
+    "by": false,
+
+    "$": false
   }
 }
