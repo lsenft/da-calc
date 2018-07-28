@@ -136,23 +136,15 @@ angular.module('myApp.calc', ['ngRoute'])
                     $('#progress-bar').html('Loading location...');
 
 
-                    $scope.location = {
-                        lat: response.data.latitude,
-                        lng: response.data.longitude,
-                        city: response.data.city,
-                        zip: response.data.zip
-                    };
+                    $scope.location = response;
 
-                    $scope.location_name = response.data.city + ', ' + response.data.region_name;
 
                     $('#progress-bar').css({'width': '25%'});
 
                     return response;
                 }).then(function () {
                     $('#progress-bar').html('Loading elevation...');
-                    if (!$scope.location) {
-                        return;
-                    }
+
                     elevation.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
                         $scope.dac.elevation = data.results[0].elevation;
                         $('#progress-bar').css({'width': '50%'});
