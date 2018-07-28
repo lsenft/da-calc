@@ -137,11 +137,13 @@ angular.module('myApp.calc', ['ngRoute'])
 
 
                     $scope.location = {
-                        lat: response.data.lat,
-                        lng: response.data.lon,
+                        lat: response.data.latitude,
+                        lng: response.data.longitude,
                         city: response.data.city,
                         zip: response.data.zip
                     };
+
+                    $scope.location_name = response.data.city + ', ' + response.data.region_name;
 
                     $('#progress-bar').css({'width': '25%'});
 
@@ -165,7 +167,7 @@ angular.module('myApp.calc', ['ngRoute'])
                     $scope.dac.air_temperature = data.main.temp;
                     $scope.dac.barometric_pressure = data.main.pressure;
                     $scope.dac.relative_humidity = data.main.humidity;
-                    $scope.dac.location_name = data.name;
+
                     $('#progress-bar').css({'width': '75%'});
                     return data;
                 });

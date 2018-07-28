@@ -28,9 +28,6 @@ function elevation($http) {
     return $http.get(url)
         .then(getElevationComplete)
         .catch(getElevationFailed);
-
-
-
         function getElevationComplete(response) {
             return response.data;
         }
