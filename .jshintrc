@@ -23,6 +23,8 @@
     "element": false,
     "by": false,
 
-    "$": false
+    "$": false,
+
+    "require": false
   }
 }
