@@ -1,22 +1,23 @@
 'use strict';
 
-angular.module('myApp.mcalc', ['ngRoute'])
+angular.module('myApp.calc', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/mcalc', {
-            templateUrl: 'mcalc/mcalc.html',
-            controller: 'MCalcCtrl'
+        $routeProvider.when('/calc', {
+            templateUrl: 'views/calc.html',
+            controller: 'CalcCtrl'
         });
     }])
 
-    .controller('MCalcCtrl', ['$scope', 'ipLocation', 'elevation', 'weather', function ($scope, ipLocation, elevation, weather) {
+    .controller('CalcCtrl', ['$scope', 'ipLocation', 'elevation', 'weather', function ($scope, ipLocation, elevation, weather) {
         $scope.dac = {
             elevation: 0,
             air_temperature: 0,
             barometric_pressure: 0,
             relative_humidity: 0,
             density_altitude: 'n/a',
-            relative_density: 'n/a'
+            relative_density: 'n/a',
+            location_name: '&nbsp;'
         };
 
         const in_per_mb = (1 / 33.86389);
@@ -126,25 +127,39 @@ angular.module('myApp.mcalc', ['ngRoute'])
 
         ipLocation.getLocation()
             .then(function (data) {
+                $('#progress-bar').html('Loading location...');
                 $scope.location = {
                     lat: data.lat,
                     lng: data.lon,
                     city: data.city,
                     zip: data.zip
                 };
+
+                $('#progress-bar').css({'width': '25%'});
+
                 return data;
             }).then(function () {
-            elevation.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
-                $scope.dac.elevation = data.results[0].elevation;
-                return data;
+                $('#progress-bar').html('Loading elevation...');
+                elevation.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
+                    $scope.dac.elevation = data.results[0].elevation;
+                    $('#progress-bar').css({'width': '50%'});
+                    return data;
             });
         }).then(function () {
+            $('#progress-bar').html('Loading weather...');
             weather.getWeather($scope.location.lat, $scope.location.lng).then(function (data) {
                 $scope.dac.air_temperature = data.main.temp;
                 $scope.dac.barometric_pressure = data.main.pressure;
                 $scope.dac.relative_humidity = data.main.humidity;
+                $scope.dac.location_name = data.name;
+                $('#progress-bar').css({'width': '75%'});
                 return data;
             });
+        }).then(function () {
+            $('#progress-bar').html('Calculating...');
+            $('#progress-bar').css({'width': '75%'});
+            $('#loading, #loading-overlay').hide();
+            $scope.calculate();
         });
 
         //  Rounding function by Jason Moon

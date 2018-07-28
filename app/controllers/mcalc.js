@@ -1,23 +1,22 @@
 'use strict';
 
-angular.module('myApp.calc', ['ngRoute'])
+angular.module('myApp.mcalc', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/calc', {
-            templateUrl: 'calc/calc.html',
-            controller: 'CalcCtrl'
+        $routeProvider.when('/mcalc', {
+            templateUrl: 'views/mcalc.html',
+            controller: 'MCalcCtrl'
         });
     }])
 
-    .controller('CalcCtrl', ['$scope', 'ipLocation', 'elevation', 'weather', function ($scope, ipLocation, elevation, weather) {
+    .controller('MCalcCtrl', ['$scope', 'ipLocation', 'elevation', 'weather', function ($scope, ipLocation, elevation, weather) {
         $scope.dac = {
             elevation: 0,
             air_temperature: 0,
             barometric_pressure: 0,
             relative_humidity: 0,
             density_altitude: 'n/a',
-            relative_density: 'n/a',
-            location_name: '&nbsp;'
+            relative_density: 'n/a'
         };
 
         const in_per_mb = (1 / 33.86389);
@@ -127,23 +126,19 @@ angular.module('myApp.calc', ['ngRoute'])
 
         ipLocation.getLocation()
             .then(function (data) {
-                $('#progress-bar').html('Loading location...');
+                $('#progress-bar').innerHTML('Loading location...');
                 $scope.location = {
                     lat: data.lat,
                     lng: data.lon,
                     city: data.city,
                     zip: data.zip
                 };
-
-                $('#progress-bar').css({'width': '25%'});
-
                 return data;
             }).then(function () {
-                $('#progress-bar').html('Loading elevation...');
-                elevation.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
-                    $scope.dac.elevation = data.results[0].elevation;
-                    $('#progress-bar').css({'width': '50%'});
-                    return data;
+            $('#progress-bar').html('Loading elevation...');
+            elevation.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
+                $scope.dac.elevation = data.results[0].elevation;
+                return data;
             });
         }).then(function () {
             $('#progress-bar').html('Loading weather...');
@@ -151,14 +146,10 @@ angular.module('myApp.calc', ['ngRoute'])
                 $scope.dac.air_temperature = data.main.temp;
                 $scope.dac.barometric_pressure = data.main.pressure;
                 $scope.dac.relative_humidity = data.main.humidity;
-                $scope.dac.location_name = data.name;
-                $('#progress-bar').css({'width': '75%'});
                 return data;
             });
         }).then(function () {
             $('#progress-bar').html('Calculating...');
-            $('#progress-bar').css({'width': '75%'});
-            $('#loading, #loading-overlay').hide();
             $scope.calculate();
         });
 
