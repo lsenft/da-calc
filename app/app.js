@@ -36,7 +36,12 @@ function elevation($http) {
         }
 
         function getElevationFailed(error) {
-            console.log('XHR Failed for ' + url + '.' + error.data);
+            var err_msg  = 'XHR Failed for ' + url + '.' + error.data;
+
+            var msg = "<div class=\"alert alert-danger\">\n" +
+                "  <strong>Error</strong> " + err_msg +"\n" +
+                "</div>";
+            $('#messages').append(msg);
         }
     }
 }
@@ -62,7 +67,11 @@ function weather($http) {
         }
 
         function getWeatherFailed(error) {
-            console.log('XHR Failed for ' + url + '.' + error.data);
+            var err_msg  = 'XHR Failed for ' + url + '.' + error.data;
+            var msg = "<div class=\"alert alert-danger\">\n" +
+                "  <strong>Error</strong> " + err_msg +"\n" +
+                "</div>";
+            $('#messages').append(msg);
         }
     }
 }
