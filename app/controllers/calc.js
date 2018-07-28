@@ -9,15 +9,22 @@ angular.module('myApp.calc', ['ngRoute'])
         });
     }])
 
-    .controller('CalcCtrl', ['$scope', 'ipLocationService', 'elevation', 'weather', function ($scope, ipLocationService, elevation, weather) {
-        $scope.dac = {
-            elevation: 0,
+    .controller('CalcCtrl', [
+        '$scope',
+        'ipLocationService',
+        'elevationService',
+        'weatherService',
+        function ($scope, ipLocationService, elevationService, weatherService) {
+        $scope.elevation = 0;
+        $scope.weather = {
             air_temperature: 0,
             barometric_pressure: 0,
             relative_humidity: 0,
-            density_altitude: 'n/a',
-            relative_density: 'n/a',
             location_name: '&nbsp;'
+        };
+        $scope.dac = {
+            density_altitude: 'n/a',
+            relative_density: 'n/a'
         };
 
         const in_per_mb = (1 / 33.86389);
@@ -145,8 +152,8 @@ angular.module('myApp.calc', ['ngRoute'])
                 }).then(function () {
                     $('#progress-bar').html('Loading elevation...');
 
-                    elevation.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
-                        $scope.dac.elevation = data.results[0].elevation;
+                    elevationService.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
+                        $scope.elevation = data;
                         $('#progress-bar').css({'width': '50%'});
                     return data;
                 });
@@ -154,11 +161,12 @@ angular.module('myApp.calc', ['ngRoute'])
                 if (!$scope.location) {
                     return;
                 }
+
                 $('#progress-bar').html('Loading weather...');
-                weather.getWeather($scope.location.lat, $scope.location.lng).then(function (data) {
-                    $scope.dac.air_temperature = data.main.temp;
-                    $scope.dac.barometric_pressure = data.main.pressure;
-                    $scope.dac.relative_humidity = data.main.humidity;
+
+
+                weatherService.getWeather($scope.location.lat, $scope.location.lng).then(function (data) {
+                    $scope.weather = data;
 
                     $('#progress-bar').css({'width': '75%'});
                     return data;

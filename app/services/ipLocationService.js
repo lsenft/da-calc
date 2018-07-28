@@ -9,8 +9,6 @@ app.factory('ipLocationService', ['$http', function ($http) {
             getLocation: function () {
                 return $http.get(url)
                     .then(function(response) {
-
-
                         return {
                             lat: response.data.lat,
                             lng: response.data.lon,
