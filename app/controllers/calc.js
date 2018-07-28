@@ -167,6 +167,8 @@ angular.module('myApp.calc', ['ngRoute'])
                 $('#progress-bar').html('Calculating...');
                 $('#progress-bar').css({'width': '75%'});
                 $scope.calculate();
+                $('#progress-bar').css({'width': '100%'});
+                $('#loading, #loading-overlay').hide();
             }).catch(function(e){
 
                 var msg = "<div class=\"alert alert-danger\">\n" +
