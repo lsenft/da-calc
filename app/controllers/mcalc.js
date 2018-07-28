@@ -93,7 +93,7 @@ angular.module('myApp.mcalc', ['ngRoute'])
             var densaltz = densaltzm * ft_per_m;
 
             if (densaltz > 36090 || densaltz < -15000) {
-                alert("Out of range for Troposhere Algorithm: Altitude =" + roundNum(densaltz, 0) + " feet\nPlease check your input values.");
+               // alert("Out of range for Troposhere Algorithm: Altitude =" + roundNum(densaltz, 0) + " feet\nPlease check your input values.");
                 return;
             }
 
@@ -121,7 +121,7 @@ angular.module('myApp.mcalc', ['ngRoute'])
 
             outForm.awosm = roundNum((awos * m_per_ft), 0);
 
-            console.log(outForm);
+            //console.log(outForm);
         };
 
         ipLocation.getLocation()
