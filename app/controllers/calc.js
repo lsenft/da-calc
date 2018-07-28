@@ -9,7 +9,7 @@ angular.module('myApp.calc', ['ngRoute'])
         });
     }])
 
-    .controller('CalcCtrl', ['$scope', 'ipLocation', 'elevation', 'weather', function ($scope, ipLocation, elevation, weather) {
+    .controller('CalcCtrl', ['$scope', 'ipLocationService', 'elevation', 'weather', function ($scope, ipLocationService, elevation, weather) {
         $scope.dac = {
             elevation: 0,
             air_temperature: 0,
@@ -122,45 +122,66 @@ angular.module('myApp.calc', ['ngRoute'])
 
             outForm.awosm = roundNum((awos * m_per_ft), 0);
 
-            console.log(outForm);
+            //console.log(outForm);
         };
 
-        ipLocation.getLocation()
-            .then(function (data) {
-                $('#progress-bar').html('Loading location...');
-                $scope.location = {
-                    lat: data.lat,
-                    lng: data.lon,
-                    city: data.city,
-                    zip: data.zip
-                };
 
-                $('#progress-bar').css({'width': '25%'});
+            ipLocationService.getLocation()
+                .then(function (response) {
 
-                return data;
-            }).then(function () {
-                $('#progress-bar').html('Loading elevation...');
-                elevation.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
-                    $scope.dac.elevation = data.results[0].elevation;
-                    $('#progress-bar').css({'width': '50%'});
+                    $('#progress-bar').html('Loading location...');
+
+
+                    $scope.location = {
+                        lat: response.data.lat,
+                        lng: response.data.lon,
+                        city: response.data.city,
+                        zip: response.data.zip
+                    };
+
+                    $('#progress-bar').css({'width': '25%'});
+
+                    return response;
+                }).then(function () {
+                    $('#progress-bar').html('Loading elevation...');
+                    if (!$scope.location) {
+                        return;
+                    }
+                    elevation.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
+                        $scope.dac.elevation = data.results[0].elevation;
+                        $('#progress-bar').css({'width': '50%'});
                     return data;
-            });
-        }).then(function () {
-            $('#progress-bar').html('Loading weather...');
-            weather.getWeather($scope.location.lat, $scope.location.lng).then(function (data) {
-                $scope.dac.air_temperature = data.main.temp;
-                $scope.dac.barometric_pressure = data.main.pressure;
-                $scope.dac.relative_humidity = data.main.humidity;
-                $scope.dac.location_name = data.name;
+                });
+            }).then(function () {
+                if (!$scope.location) {
+                    return;
+                }
+                $('#progress-bar').html('Loading weather...');
+                weather.getWeather($scope.location.lat, $scope.location.lng).then(function (data) {
+                    $scope.dac.air_temperature = data.main.temp;
+                    $scope.dac.barometric_pressure = data.main.pressure;
+                    $scope.dac.relative_humidity = data.main.humidity;
+                    $scope.dac.location_name = data.name;
+                    $('#progress-bar').css({'width': '75%'});
+                    return data;
+                });
+            }).then(function () {
+                $('#progress-bar').html('Calculating...');
                 $('#progress-bar').css({'width': '75%'});
-                return data;
-            });
-        }).then(function () {
-            $('#progress-bar').html('Calculating...');
-            $('#progress-bar').css({'width': '75%'});
-            $('#loading, #loading-overlay').hide();
-            $scope.calculate();
-        });
+                $scope.calculate();
+            }).catch(function(e){
+
+                var msg = "<div class=\"alert alert-danger\">\n" +
+                    "  <strong>Error " +  e.status + "</strong> " +  e.statusText +"\n" +
+                    "</div>";
+                $('#messages').append(msg);
+
+            })
+                .finally(function() {
+                    $('#progress-bar').css({'width': '100%'});
+                    $('#loading, #loading-overlay').hide();
+                });
+
 
         //  Rounding function by Jason Moon
         function roundNum(Num, Places) {
