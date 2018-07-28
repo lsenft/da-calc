@@ -1,36 +1,37 @@
 'use strict';
 
 angular.module('myApp.calc', ['ngRoute'])
-
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/calc', {
             templateUrl: 'views/calc.html',
             controller: 'CalcCtrl'
         });
     }])
-
     .controller('CalcCtrl', [
         '$scope',
+        'browserLocationService',
         'ipLocationService',
         'elevationService',
         'weatherService',
         'calculationService',
-        function ($scope, ipLocationService, elevationService, weatherService, calculationService) {
-        $scope.elevation = 0;
-        $scope.weather = {
-            air_temperature: 0,
-            barometric_pressure: 0,
-            relative_humidity: 0,
-            location_name: '&nbsp;'
-        };
-        $scope.dac = {
-            density_altitude: 'n/a',
-            relative_density: 'n/a'
-        };
+        function ($scope, browserLocationService, ipLocationService, elevationService, weatherService, calculationService) {
+            $scope.elevation = 0;
+            $scope.weather = {
+                air_temperature: 0,
+                barometric_pressure: 0,
+                relative_humidity: 0,
+                location_name: '&nbsp;'
+            };
 
+            $scope.dac = {
+                density_altitude: 'n/a',
+                relative_density: 'n/a'
+            };
 
-
-
+            browserLocationService.getLocation().then(function (data) {
+                console.log(data);
+                return data;
+            });
 
             ipLocationService.getLocation()
                 .then(function (response) {
@@ -45,11 +46,11 @@ angular.module('myApp.calc', ['ngRoute'])
 
                     return response;
                 }).then(function () {
-                    $('#progress-bar').html('Loading elevation...');
+                $('#progress-bar').html('Loading elevation...');
 
-                    elevationService.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
-                        $scope.elevation = data;
-                        $('#progress-bar').css({'width': '50%'});
+                elevationService.getElevation($scope.location.lat, $scope.location.lng).then(function (data) {
+                    $scope.elevation = data;
+                    $('#progress-bar').css({'width': '50%'});
                     return data;
                 });
             }).then(function () {
@@ -79,19 +80,19 @@ angular.module('myApp.calc', ['ngRoute'])
 
                 $('#progress-bar').css({'width': '100%'});
                 $('#loading, #loading-overlay').hide();
-            }).catch(function(e){
+            }).catch(function (e) {
 
                 var msg = "<div class=\"alert alert-danger\">\n" +
-                    "  <strong>Error " +  e.status + "</strong> " +  e.statusText +"\n" +
+                    "  <strong>Error " + e.status + "</strong> " + e.statusText + "\n" +
                     "</div>";
                 $('#messages').append(msg);
 
             })
-                .finally(function() {
+                .finally(function () {
                     $('#progress-bar').css({'width': '100%'});
                     $('#loading, #loading-overlay').hide();
                 });
 
-    }]);
+        }]);
 
 

@@ -4,6 +4,7 @@
 var app = angular.module('myApp', [
     'ngRoute',
     'ngSanitize',
+    'geolocation',
     'myApp.calc',
     'myApp.about',
     'myApp.version'
