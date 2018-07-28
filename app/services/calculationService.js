@@ -164,7 +164,7 @@ app.factory('calculationService', [function () {
             var densaltz = densaltzm * ft_per_m;
 
             if (densaltz > 36090 || densaltz < -15000) {
-                var err_msg = "Out of range for Troposhere Algorithm: Altitude =" + roundNum(densaltz, 0) + " feet\nPlease check your input values.";
+                var err_msg = "Out of range for Troposhere Algorithm: Altitude =" + densaltz + " feet\nPlease check your input values.";
                 var msg = "<div class=\"alert alert-danger\">\n" +
                     "  <strong>Error</strong> " + err_msg + "\n" +
                     "</div>";
