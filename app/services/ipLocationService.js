@@ -3,7 +3,7 @@
 app.factory('ipLocationService', ['$http', function ($http) {
 
 
-        const url = 'http://ip-api.com/json';
+        const url = '//ip-api.com/json';
 
 
         return {

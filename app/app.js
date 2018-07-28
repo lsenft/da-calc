@@ -54,7 +54,7 @@ function weather($http) {
     };
     function getWeather(lat, lng) {
         const api_key = '133cb745ed32ad0dbf2284df34a28987';
-        const url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lng + '&APPID=' + api_key;
+        const url = 'https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lng + '&APPID=' + api_key;
 
         return $http.get(url)
             .then(getWeatherComplete)
