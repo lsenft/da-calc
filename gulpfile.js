@@ -17,10 +17,6 @@ gulp.task('lint', function() {
         .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('clean', function() {
-    gulp.src('./docs/*')
-        .pipe(clean({force: true}));
-});
 
 // gulp.task('minify-css', function() {
 //     var opts = {comments:true,spare:true};
@@ -51,7 +47,6 @@ gulp.task('html', function () {
 
 gulp.task('build', function() {
     runSequence(
-        ['clean'],
         ['copy-bower-components', 'lint', 'html']
     );
 });

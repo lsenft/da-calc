@@ -79,12 +79,14 @@
         <p class="text-muted">Place footer content here.</p>
     </div>
 </footer>
-<!-- In production use:
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
--->
+
+<!-- build:js js/libs.bundle.js -->
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<!-- endbuild -->
+
+<!-- build:js js/app.bundle.js -->
 <script src="app.js"></script>
 <script src="services/ipLocationService.js"></script>
 <script src="controllers/calc.js"></script>
@@ -92,6 +94,7 @@
 <script src="components/version/version.js"></script>
 <script src="components/version/version-directive.js"></script>
 <script src="components/version/interpolate-filter.js"></script>
+<!-- endbuild -->
 
 <!-- Bootstrap -->
 <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>

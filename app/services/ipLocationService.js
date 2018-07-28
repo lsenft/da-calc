@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('ipLocationService', ['$http', function ($http) {
+angular.module('myApp.calc').factory('ipLocationService', ['$http', function ($http) {
 
 
         const url = 'http://ip-api.com/json';

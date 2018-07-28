@@ -1,0 +1,43 @@
+<div ng-controller="CalcCtrl">
+    <h1 class="page-header" ng-bind-html="dac.location_name"></h1>
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th>Elevation:</th>
+                <td><span ng-bind-html="dac.elevation"></span></td>
+                <td>meters</td>
+            </tr>
+            <tr>
+                <th>Air Temperature:</th>
+                <td><span ng-bind-html="dac.air_temperature"></span></td>
+                <td>Kelvin</td>
+            </tr>
+            <tr>
+                <th>Barometric Pressure:</th>
+                <td><span ng-bind-html="dac.barometric_pressure"></span></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Relative Humidity:</th>
+                <td><span ng-bind-html="dac.relative_humidity"></span></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Density Altitude:</th>
+                <td><span ng-bind-html="dac.density_altitude"></span></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Relative Density:</th>
+                <td><span ng-bind-html="dac.relative_density"></span></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <form novalidate ng-submit="calculate()">
+
+        <button class="btn" type="submit">Submit</button><br />
+
+
+    </form>
+</div>
