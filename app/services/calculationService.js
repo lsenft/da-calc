@@ -12,20 +12,20 @@ app.factory('calculationService', [function () {
 // Calculate the saturation vapor pressure given the temperature(celsius)
 // Polynomial from Herman Wobus
     {
-        var eso = 6.1078;
-        var es;
-        var c0 = 0.99999683;
-        var c1 = -0.90826951E-02;
-        var c2 = 0.78736169E-04;
-        var c3 = -0.61117958E-06;
-        var c4 = 0.43884187E-08;
-        var c5 = -0.29883885E-10;
-        var c6 = 0.21874425E-12;
-        var c7 = -0.17892321E-14;
-        var c8 = 0.11112018E-16;
-        var c9 = -0.30994571E-19;
+        let eso = 6.1078;
+        let es;
+        let c0 = 0.99999683;
+        let c1 = -0.90826951E-02;
+        let c2 = 0.78736169E-04;
+        let c3 = -0.61117958E-06;
+        let c4 = 0.43884187E-08;
+        let c5 = -0.29883885E-10;
+        let c6 = 0.21874425E-12;
+        let c7 = -0.17892321E-14;
+        let c8 = 0.11112018E-16;
+        let c9 = -0.30994571E-19;
 
-        var pol = c0 + t * (c1 + t * (c2 + t * (c3 + t * (c4 + t * (c5 + t * (c6 + t * (c7 + t * (c8 + t * (c9)))))))));
+        let pol = c0 + t * (c1 + t * (c2 + t * (c3 + t * (c4 + t * (c5 + t * (c6 + t * (c7 + t * (c8 + t * (c9)))))))));
 
         es = eso / Math.pow(pol, 8);
 
@@ -36,11 +36,11 @@ app.factory('calculationService', [function () {
     function calcAbsPress(pressure, altitude)
 // Calculate absolute air pressure given the barometric pressure(mb) and altitude(meters)
     {
-        var k1 = 0.190284;
-        var k2 = 8.4288 * Math.pow(10, -5);
-        var p1 = Math.pow(pressure, k1);
-        var p2 = altitude * k2;
-        var p3 = 0.3 + Math.pow((p1 - p2), (1 / k1));
+        let k1 = 0.190284;
+        let k2 = 8.4288 * Math.pow(10, -5);
+        let p1 = Math.pow(pressure, k1);
+        let p2 = altitude * k2;
+        let p3 = 0.3 + Math.pow((p1 - p2), (1 / k1));
         return (p3);
     }
 
@@ -48,13 +48,13 @@ app.factory('calculationService', [function () {
     function calcDensity(abspressmb, e, tc)
 //  Calculate the air density in kg/m3
     {
-        var Rv = 461.4964;
-        var Rd = 287.0531;
+        let Rv = 461.4964;
+        let Rd = 287.0531;
 
-        var tk = tc + 273.15;
-        var pv = e * 100;
-        var pd = (abspressmb - e) * 100;
-        var d = (pv / (Rv * tk)) + (pd / (Rd * tk));
+        let tk = tc + 273.15;
+        let pv = e * 100;
+        let pd = (abspressmb - e) * 100;
+        let d = (pv / (Rv * tk)) + (pd / (Rd * tk));
         return (d);
     }
 
@@ -62,27 +62,27 @@ app.factory('calculationService', [function () {
     function calcAltitude(d)
 // Calculate the ISA altitude (meters) for a given density (kg/m3)
     {
-        var g = 9.80665;
-        var Po = 101325;
-        var To = 288.15;
-        var L = 6.5;
-        var R = 8.314320;
-        var M = 28.9644;
+        let g = 9.80665;
+        let Po = 101325;
+        let To = 288.15;
+        let L = 6.5;
+        let R = 8.314320;
+        let M = 28.9644;
 
-        var D = d * 1000;
+        let D = d * 1000;
 
-        var p2 = ((L * R) / (g * M - L * R)) * Math.log((R * To * D) / (M * Po));
+        let p2 = ((L * R) / (g * M - L * R)) * Math.log((R * To * D) / (M * Po));
 
-        var H = -(To / L) * (Math.exp(p2) - 1);
+        let H = -(To / L) * (Math.exp(p2) - 1);
 
-        var h = H * 1000;
+        let h = H * 1000;
 
         return (h);
     }
 
     // Calculate the Z altitude (meters), given the H altitide (meters)
     function calcZ(h) {
-        var r = 6369E3;
+        let r = 6369E3;
 
         return ((r * h) / (r - h));
 
@@ -92,7 +92,7 @@ app.factory('calculationService', [function () {
     function calcH(z)
 // Calculate the H altitude (meters), given the Z altitide (meters)
     {
-        var r = 6369E3;
+        let r = 6369E3;
 
         return ((r * z) / (r + z));
 
@@ -102,10 +102,10 @@ app.factory('calculationService', [function () {
     function calcAs2Press(As, h)
 // Calculate the actual pressure (mb)from the altimeter setting (mb) and geopotential altitude (m)
     {
-        var k1 = 0.190263;
-        var k2 = 8.417286E-5;
+        let k1 = 0.190263;
+        let k2 = 8.417286E-5;
 
-        var p = Math.pow((Math.pow(As, k1) - (k2 * h)), (1 / k1));
+        let p = Math.pow((Math.pow(As, k1) - (k2 * h)), (1 / k1));
 
         return (p);
     }
@@ -113,7 +113,7 @@ app.factory('calculationService', [function () {
     return {
         calculate: function (data) {
             // define variables to be used in inputs
-            var z, zm, altset, altsetmb, tk, tc, tf, tdpf, tdpc;
+            let z, zm, altset, altsetmb, tk, tc, tf, tdpf, tdpc;
 
 
             // Process the input values
@@ -140,32 +140,32 @@ app.factory('calculationService', [function () {
             let emb = esmb * rh / 100;
 
             // Calculate geopotential altitude H (m) from geometric altitude (m) Z
-            var hm = calcH(zm);
+            let hm = calcH(zm);
 
 
             // Calculate the absolute pressure given the altimeter setting(mb) and geopotential elevation(meters)
-            var actpressmb = calcAs2Press(altsetmb, hm);
+            let actpressmb = calcAs2Press(altsetmb, hm);
 
 
             // Calculate the air density (kg/m3) from absolute pressure (mb) vapor pressure (mb) and temp (c)
-            var density = calcDensity(actpressmb, emb, tc);
-            var relden = 100 * (density / 1.225);
+            let density = calcDensity(actpressmb, emb, tc);
+            let relden = 100 * (density / 1.225);
 
 
             // Calculate the geopotential altitude (m) in ISA with that same density (kg/m3)
-            var densaltm = calcAltitude(density);
+            let densaltm = calcAltitude(density);
 
             // Calculate geometric altitude Z (m) from geopotential altitude (m) H
-            var densaltzm = calcZ(densaltm);
+            let densaltzm = calcZ(densaltm);
 
 
             // Convert Units for output
-            var actpress = actpressmb * in_per_mb;
-            var densaltz = densaltzm * ft_per_m;
+            let actpress = actpressmb * in_per_mb;
+            let densaltz = densaltzm * ft_per_m;
 
             if (densaltz > 36090 || densaltz < -15000) {
-                var err_msg = "Out of range for Troposhere Algorithm: Altitude =" + densaltz + " feet\nPlease check your input values.";
-                var msg = "<div class=\"alert alert-danger\">\n" +
+                let err_msg = "Out of range for Troposhere Algorithm: Altitude =" + densaltz + " feet\nPlease check your input values.";
+                let msg = "<div class=\"alert alert-danger\">\n" +
                     "  <strong>Error</strong> " + err_msg + "\n" +
                     "</div>";
                 $('#messages').append(msg);
@@ -174,10 +174,10 @@ app.factory('calculationService', [function () {
 
 
             // calculate estimated awos density altitude
-            var nws = 145442.16 * (1 - Math.pow(((17.326 * actpress) / (tf + 459.67)), 0.235));
-            var awos = (nws / 100) * 100;
-            var density_e = density * 0.062428;
-            var awosm = awos * m_per_ft;
+            let nws = 145442.16 * (1 - Math.pow(((17.326 * actpress) / (tf + 459.67)), 0.235));
+            let awos = (nws / 100) * 100;
+            let density_e = density * 0.062428;
+            let awosm = awos * m_per_ft;
 
             return {
                 relative_density: relden,

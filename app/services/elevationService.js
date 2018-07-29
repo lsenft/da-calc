@@ -2,9 +2,7 @@
 
 app.factory('elevationService', ['$http', function ($http) {
 
-
     return {
-
         getElevation: function (lat, lng) {
 
             const url = 'https://api.open-elevation.com/api/v1/lookup?locations=' + lat + ',' + lng;

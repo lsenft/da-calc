@@ -11,11 +11,9 @@ angular.module('myApp.calc', ['ngRoute'])
         '$scope',
         '$q',
         'browserLocationService',
-        'ipLocationService',
-        'elevationService',
         'weatherService',
         'calculationService',
-        function ($scope, $q, browserLocationService, ipLocationService, elevationService, weatherService, calculationService) {
+        function ($scope, $q, browserLocationService,  weatherService, calculationService) {
             $scope.weather = {
                 air_temperature: 0,
                 barometric_pressure: 0,
@@ -29,12 +27,11 @@ angular.module('myApp.calc', ['ngRoute'])
             };
             $scope.location = {lat: 0, lng: 0, elevation: 0};
 
-            var locationRequest = getLocation().then(function (responses) {
+            let locationRequest = browserLocationService.getLocation().then(function (responses) {
                 $scope.location = responses;
-
             });
 
-            var weatherRequest = $q.all([locationRequest]).then(function(){
+            let weatherRequest = $q.all([locationRequest]).then(function(){
                 return weatherService.getWeather($scope.location.lat, $scope.location.lng).then(function (response) {
                     $scope.weather = response;
                 });
@@ -42,7 +39,7 @@ angular.module('myApp.calc', ['ngRoute'])
 
 
             $q.all([locationRequest, weatherRequest]).then(function() {
-                    var options = {
+                    let options = {
                         elevation: $scope.location.elevation,
                         barometric_pressure: $scope.weather.barometric_pressure,
                         air_temperature: $scope.weather.air_temperature,
@@ -51,7 +48,7 @@ angular.module('myApp.calc', ['ngRoute'])
                     $scope.dac = calculationService.calculate(options);
                 })
                 .catch(function (e) {
-                var msg = "<div class=\"alert alert-danger\">\n" +
+                let msg = "<div class=\"alert alert-danger\">\n" +
                     "  <strong>Error:</strong> " + e.message + "\n" +
                     "</div>";
                 $('#messages').append(msg);
@@ -59,27 +56,8 @@ angular.module('myApp.calc', ['ngRoute'])
             })['finally'](function () {
                 $('#loading, #loading-overlay').hide();
             });
-
-
-            function getLocation() {
-                return browserLocationService.getLocation().then(function (data) {
-                    if (!data) {
-                        $q.all([
-                            ipLocationService.getLocation(),
-                            elevationService.getElevation($scope.location.lat, $scope.location.lng)
-                        ])
-                            .then(function (responses) {
-                                $scope.location = responses[0];
-                                $scope.elevation = responses[1];
-                            });
-                    }
-
-                    return data;
-                });
-            }
         }
-
-
-]);
+]
+    );
 
 
