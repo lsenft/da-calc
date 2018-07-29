@@ -1,17 +1,14 @@
 'use strict';
 
-app.factory('calculationService', [function () {
+app.factory('calculationService', ['unitService', function (unitService) {
 
     const in_per_mb = (1 / 33.86389);
-    const mb_per_in = 33.86389;
     const m_per_ft = 0.304800;
     const ft_per_m = (1 / 0.304800);
 
-
-    function calcVaporPressure_wobus(t)
-// Calculate the saturation vapor pressure given the temperature(celsius)
-// Polynomial from Herman Wobus
-    {
+    // Calculate the saturation vapor pressure given the temperature(celsius)
+    // Polynomial from Herman Wobus
+    function calcVaporPressure_wobus(t) {
         let eso = 6.1078;
         let es;
         let c0 = 0.99999683;
@@ -32,10 +29,8 @@ app.factory('calculationService', [function () {
         return (es);
     }
 
-
-    function calcAbsPress(pressure, altitude)
-// Calculate absolute air pressure given the barometric pressure(mb) and altitude(meters)
-    {
+    // Calculate absolute air pressure given the barometric pressure(mb) and altitude(meters)
+    function calcAbsPress(pressure, altitude) {
         let k1 = 0.190284;
         let k2 = 8.4288 * Math.pow(10, -5);
         let p1 = Math.pow(pressure, k1);
@@ -45,9 +40,8 @@ app.factory('calculationService', [function () {
     }
 
 
-    function calcDensity(abspressmb, e, tc)
-//  Calculate the air density in kg/m3
-    {
+    //  Calculate the air density in kg/m3
+    function calcDensity(abspressmb, e, tc) {
         let Rv = 461.4964;
         let Rd = 287.0531;
 
@@ -58,10 +52,8 @@ app.factory('calculationService', [function () {
         return (d);
     }
 
-
-    function calcAltitude(d)
-// Calculate the ISA altitude (meters) for a given density (kg/m3)
-    {
+    // Calculate the ISA altitude (meters) for a given density (kg/m3)
+    function calcAltitude(d) {
         let g = 9.80665;
         let Po = 101325;
         let To = 288.15;
@@ -85,23 +77,19 @@ app.factory('calculationService', [function () {
         let r = 6369E3;
 
         return ((r * h) / (r - h));
-
     }
 
 
-    function calcH(z)
-// Calculate the H altitude (meters), given the Z altitide (meters)
-    {
+    // Calculate the H altitude (meters), given the Z altitide (meters)
+    function calcH(z) {
         let r = 6369E3;
 
         return ((r * z) / (r + z));
-
     }
 
 
-    function calcAs2Press(As, h)
-// Calculate the actual pressure (mb)from the altimeter setting (mb) and geopotential altitude (m)
-    {
+    // Calculate the actual pressure (mb)from the altimeter setting (mb) and geopotential altitude (m)
+    function calcAs2Press(As, h) {
         let k1 = 0.190263;
         let k2 = 8.417286E-5;
 
@@ -110,10 +98,18 @@ app.factory('calculationService', [function () {
         return (p);
     }
 
+    // Calculate dyno correction given temp(celsius), absolute pressure(inchesHg)  and vapor pressure(inchesHg)
+    function calcDynoCorrection(temp, abspress, vapress) {
+        let p1=29.235/(abspress-vapress);
+        let p2=Math.pow( ((temp+273)/298), 0.5);
+        let p3=(1.18*(p1*p2) - 0.18);
+        return(p3);
+    }
+
     return {
         calculate: function (data) {
             // define variables to be used in inputs
-            let z, zm, altset, altsetmb, tk, tc, tf, tdpf, tdpc;
+            let zm, altsetmb, tk, tc, tf;
 
 
             // Process the input values
@@ -121,9 +117,12 @@ app.factory('calculationService', [function () {
             // geometric elevation, meters
             zm = 1.0 * data.elevation;
 
-
+            //var mb_per_in = 33.86389;
             // altimeter/Barometric Pressure setting, in-hPa
-            altsetmb = 1.0 * data.barometric_pressure;
+           altsetmb = 1.0 * data.barometric_pressure;
+            //altsetmb = data.barometric_pressure*mb_per_in;
+
+
 
 
             // Air temperature, deg F
@@ -172,16 +171,22 @@ app.factory('calculationService', [function () {
                 return;
             }
 
+            let dynocf = calcDynoCorrection(tc,actpressmb*in_per_mb,emb*in_per_mb);
+
 
             // calculate estimated awos density altitude
             let nws = 145442.16 * (1 - Math.pow(((17.326 * actpress) / (tf + 459.67)), 0.235));
             let awos = (nws / 100) * 100;
-            let density_e = density * 0.062428;
+
             let awosm = awos * m_per_ft;
+
+            let horsepower=100/dynocf;
 
             return {
                 relative_density: relden,
-                density_altitude: awos
+                density_altitude: awosm,
+                horsepower: horsepower,
+                dynocf: dynocf
             };
         }
     };
