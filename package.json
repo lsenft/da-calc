@@ -7,7 +7,7 @@
   "license": "MIT",
   "devDependencies": {
     "bower": "^1.8.8",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-clean": "^0.4.0",
     "gulp-connect": "^5.7.0",
     "gulp-if": "^2.0.2",
@@ -23,7 +23,7 @@
     "install": "^0.12.2",
     "jasmine-core": "^2.4.1",
     "jshint": "^2.10.2",
-    "karma": "^2.0.5",
+    "karma": "^4.4.1",
     "karma-chrome-launcher": "^0.2.3",
     "karma-firefox-launcher": "^0.1.7",
     "karma-jasmine": "^0.3.8",
